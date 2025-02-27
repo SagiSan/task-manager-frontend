@@ -27,3 +27,8 @@ export interface TaskInput {
   priority: TaskPriority;
   dueDate?: string;
 }
+
+export interface TaskRes {
+  tasks: Task[];
+  total: 0;
+}

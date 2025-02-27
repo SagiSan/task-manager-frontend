@@ -1,5 +1,5 @@
 const API_BASE = "http://localhost:3000";
-import { Task, TaskInput } from "@/types/task";
+import { Task, TaskInput, TaskRes } from "@/types/task";
 import { ApiResponse } from "@/types/api";
 
 async function processResponse<T>(res: Response): Promise<ApiResponse<T>> {
@@ -83,7 +83,7 @@ export async function logoutUser(): Promise<ApiResponse<null>> {
   }
 }
 
-export async function getTasks(filters = ""): Promise<ApiResponse<Task[]>> {
+export async function getTasks(filters = ""): Promise<ApiResponse<TaskRes>> {
   try {
     const res = await fetch(`${API_BASE}/tasks?${filters}`, {
       method: "GET",

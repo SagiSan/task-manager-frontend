@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import { getTasks, addTask, updateTask, deleteTask } from "@/lib/api";
-import { Task, TaskInput, TaskStatus } from "@/types/task";
+import { Task, TaskInput, TaskRes, TaskStatus } from "@/types/task";
 import { ApiResponse } from "@/types";
 
 interface TaskStore {
   tasks: Task[];
-  fetchTasks: () => Promise<ApiResponse<Task[]>>;
+  total: number;
+  fetchTasks: () => Promise<ApiResponse<TaskRes>>;
   addTask: (taskData: TaskInput) => Promise<ApiResponse<Task>>;
   updateTask: (
     id: number,
@@ -17,12 +18,12 @@ interface TaskStore {
 
 export const useTaskStore = create<TaskStore>((set, get) => ({
   tasks: [],
-
+  total: 0,
   fetchTasks: async () => {
     try {
       const response = await getTasks();
       if (response.success && response.data) {
-        set({ tasks: response.data });
+        set({ tasks: response.data.tasks, total: response.data.total });
         return { success: true, data: response.data };
       } else {
         console.error("Failed to fetch tasks:", response.message);
