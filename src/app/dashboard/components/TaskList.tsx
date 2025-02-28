@@ -12,6 +12,9 @@ import {
   Droppable,
   DropResult,
 } from "@hello-pangea/dnd";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000");
 
 export default function TaskList() {
   const { tasks, fetchTasks, moveTask } = useTaskStore();
@@ -20,6 +23,19 @@ export default function TaskList() {
   const [filterDueDate, setFilterDueDate] = useState<string>("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    socket.on("task_update", (updatedTask) => {
+      alert(
+        `Task ${updatedTask.title}(id: ${updatedTask.id}) has been updated`
+      );
+      console.log(updatedTask);
+    });
+
+    return () => {
+      socket.off("task_update");
+    };
+  }, []);
 
   useEffect(() => {
     fetchTasks();
@@ -263,7 +279,7 @@ export default function TaskList() {
         )}
       </div>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="h-full grid grid-cols-1 md:grid-cols-3 gap-6">
           {renderColumn(TaskStatus.PENDING, "bg-blue-100")}
           {renderColumn(TaskStatus.IN_PROGRESS, "bg-yellow-100")}
           {renderColumn(TaskStatus.COMPLETED, "bg-green-100")}

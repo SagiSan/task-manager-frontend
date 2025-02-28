@@ -18,7 +18,6 @@ export default async function RootLayout({
     (window.location.pathname === "/login" ||
       window.location.pathname === "/register");
 
-  console.log(isAuthPage, user);
   return (
     <html lang="en">
       <body className="bg-slate-500">

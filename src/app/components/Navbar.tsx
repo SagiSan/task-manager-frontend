@@ -40,7 +40,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full bg-gray-900 text-white py-4 px-6 flex justify-between items-center">
+    <nav className="w-full h-16 bg-gray-900 text-white py-4 px-6 flex justify-between items-center">
       <h1 className="text-xl font-bold">Task Manager</h1>
 
       <div className="relative" ref={menuRef}>
