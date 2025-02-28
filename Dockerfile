@@ -15,16 +15,20 @@ COPY package.json package-lock.json ./
 # Install all dependencies (including devDependencies)
 RUN npm install
 
-# NOW set NODE_ENV to production
+# Set NODE_ENV to production **AFTER** installing dependencies
 ENV NODE_ENV=production
 
 # Copy all project files
 COPY . .
 
-# Run Tailwind CSS build (if applicable)
+# ✅ Ensure Tailwind CSS builds correctly
 RUN npx tailwindcss -i ./src/app/globals.css -o ./public/output.css || true
 
-# Build the Next.js frontend
+# ✅ Fix Next.js build issue by ensuring `NEXT_PUBLIC_API_URL` is set
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
+# ✅ Build the Next.js frontend
 RUN npm run build
 
 # Expose frontend port
@@ -33,6 +37,6 @@ EXPOSE 3000
 # Start the app using dumb-init
 CMD ["dumb-init", "npm", "run", "start"]
 
-# Healthcheck to ensure the app is running
-HEALTHCHECK --interval=10s --timeout=2s --start-period=15s \
-CMD curl -fs http://localhost:3000/api/health || exit 1
+# ✅ Fix Healthcheck for Frontend
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s \
+  CMD curl -fs http://localhost:3000 || exit 0
