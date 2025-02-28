@@ -28,7 +28,7 @@ export async function getUserClient(): Promise<
   ApiResponse<{ id: number; email: string }>
 > {
   try {
-    const res = await fetch(`${API_BASE}/auth/me`, {
+    const res = await fetch(`/auth/me`, {
       method: "GET",
       credentials: "include",
     });
@@ -44,7 +44,7 @@ export async function registerUser(
   password: string
 ): Promise<ApiResponse<null>> {
   try {
-    const res = await fetch(`${API_BASE}/users/signup`, {
+    const res = await fetch(`/users/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -61,7 +61,7 @@ export async function loginUser(
   password: string
 ): Promise<ApiResponse<null>> {
   try {
-    const res = await fetch(`${API_BASE}/auth/login`, {
+    const res = await fetch(`/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -76,7 +76,7 @@ export async function loginUser(
 
 export async function logoutUser(): Promise<ApiResponse<null>> {
   try {
-    const res = await fetch(`${API_BASE}/auth/logout`, {
+    const res = await fetch(`/auth/logout`, {
       method: "POST",
       credentials: "include",
     });
@@ -89,7 +89,7 @@ export async function logoutUser(): Promise<ApiResponse<null>> {
 
 export async function getTasks(filters = ""): Promise<ApiResponse<TaskRes>> {
   try {
-    const res = await fetch(`${API_BASE}/tasks?${filters}`, {
+    const res = await fetch(`/tasks?${filters}`, {
       method: "GET",
       credentials: "include",
     });
@@ -102,7 +102,7 @@ export async function getTasks(filters = ""): Promise<ApiResponse<TaskRes>> {
 
 export async function addTask(taskData: TaskInput): Promise<ApiResponse<Task>> {
   try {
-    const res = await fetch(`${API_BASE}/tasks`, {
+    const res = await fetch(`/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -120,7 +120,7 @@ export async function updateTask(
   taskData: Partial<TaskInput>
 ): Promise<ApiResponse<Task>> {
   try {
-    const res = await fetch(`${API_BASE}/tasks/${id}`, {
+    const res = await fetch(`/tasks/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -135,7 +135,7 @@ export async function updateTask(
 
 export async function deleteTask(id: number): Promise<ApiResponse<null>> {
   try {
-    const res = await fetch(`${API_BASE}/tasks/${id}`, {
+    const res = await fetch(`/tasks/${id}`, {
       method: "DELETE",
       credentials: "include",
     });
