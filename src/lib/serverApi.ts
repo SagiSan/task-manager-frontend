@@ -3,13 +3,8 @@
 import { Task } from "@/types/task";
 import { ApiResponse } from "@/types/api";
 import { cookies } from "next/headers";
-
-const API_BASE = "http://localhost:3000";
-
-export interface User {
-  id: number;
-  email: string;
-}
+import { User } from "@/types";
+import { API_BASE } from "./api";
 
 async function processServerResponse<T>(
   res: Response

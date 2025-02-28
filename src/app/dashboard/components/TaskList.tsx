@@ -13,8 +13,9 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 import { io } from "socket.io-client";
+import { API_BASE } from "@/lib/api";
 
-const socket = io("http://localhost:3000");
+const socket = io(API_BASE);
 
 export default function TaskList() {
   const { tasks, fetchTasks, moveTask } = useTaskStore();

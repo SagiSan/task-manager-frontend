@@ -1,6 +1,10 @@
-const API_BASE = "http://localhost:3000";
 import { Task, TaskInput, TaskRes } from "@/types/task";
 import { ApiResponse } from "@/types/api";
+
+export const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_BACKEND_URL_PROD
+    : process.env.NEXT_PUBLIC_BACKEND_URL;
 
 async function processResponse<T>(res: Response): Promise<ApiResponse<T>> {
   try {
