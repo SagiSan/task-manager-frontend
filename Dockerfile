@@ -21,9 +21,6 @@ ENV NODE_ENV=production
 # Copy all project files
 COPY . .
 
-# ✅ Ensure Tailwind CSS builds correctly
-RUN npx tailwindcss -i ./src/app/globals.css -o ./public/output.css || true
-
 # ✅ Fix Next.js build issue by ensuring `NEXT_PUBLIC_API_URL` is set
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
