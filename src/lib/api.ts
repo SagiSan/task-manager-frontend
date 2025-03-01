@@ -6,13 +6,6 @@ export const API_BASE =
     ? process.env.NEXT_PUBLIC_BACKEND_URL_PROD
     : process.env.NEXT_PUBLIC_BACKEND_URL;
 
-console.log(
-  API_BASE,
-  process.env.NODE_ENV,
-  process.env.NEXT_PUBLIC_BACKEND_URL_PROD,
-  process.env.NEXT_PUBLIC_BACKEND_URL
-);
-
 async function processResponse<T>(res: Response): Promise<ApiResponse<T>> {
   try {
     const contentType = res.headers.get("content-type");

@@ -73,7 +73,6 @@ export default function LoginPage() {
           Login
         </button>
 
-        {/* Divider */}
         <div className="relative my-6">
           <hr className="border-gray-300" />
           <span className="absolute inset-x-0 -top-3 text-gray-600 bg-white px-4 mx-auto w-fit">
@@ -81,7 +80,6 @@ export default function LoginPage() {
           </span>
         </div>
 
-        {/* OAuth Login */}
         <button
           type="button"
           onClick={() => signIn("google")}

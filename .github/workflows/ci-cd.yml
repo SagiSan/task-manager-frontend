@@ -1,0 +1,76 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Check out the repository code
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      # 2. Set up Node
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Run tests
+      - name: Run tests
+        run: npm run test
+
+      # 5. Build the Next.js app
+      - name: Build
+        run: npm run build
+
+  deploy:
+    # This job only runs if the build-and-test job succeeds
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+
+    # Optionally ensure that we only deploy from "main" (not PRs, etc.)
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Deploy using SSH
+      - name: Deploy to Linux server via SSH
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          script: |
+            # 1. Navigate to your app directory on the server
+            cd /path/to/your/app
+
+            # 2. (Option A) Git pull if you already have a git repo on the server
+            git pull origin main
+
+            # 3. Install (or update) dependencies
+            npm install
+
+            # 4. Build
+            npm run build
+
+            # 5. Restart your PM2 or systemd service, etc.
+            # pm2 restart my-nextjs-app
+            # or
+            # sudo systemctl restart my-nextjs-app

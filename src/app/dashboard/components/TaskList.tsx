@@ -14,6 +14,7 @@ import {
 } from "@hello-pangea/dnd";
 import { io } from "socket.io-client";
 import { API_BASE } from "@/lib/api";
+import { motion } from "framer-motion";
 
 const socket = io(API_BASE);
 
@@ -27,7 +28,7 @@ export default function TaskList() {
 
   useEffect(() => {
     socket.on("task_update", (updatedTask) => {
-      alert(
+      console.log(
         `Task ${updatedTask.title}(id: ${updatedTask.id}) has been updated`
       );
       console.log(updatedTask);
@@ -144,7 +145,7 @@ export default function TaskList() {
           Progress: {progressPercentage}%
         </p>
         <div className="w-full bg-gray-200 h-4 rounded-lg overflow-hidden">
-          <div
+          <motion.div
             className={`h-full ${
               progressPercentage === 100
                 ? "bg-green-500"
@@ -153,6 +154,8 @@ export default function TaskList() {
                 : "bg-red-500"
             }`}
             style={{ width: `${progressPercentage}%` }}
+            animate={{ width: `${progressPercentage}%` }}
+            transition={{ type: "spring", stiffness: 100, damping: 25 }}
           />
         </div>
       </div>

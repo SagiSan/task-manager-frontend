@@ -2,11 +2,18 @@
 
 import { Task, TaskPriority } from "@/types/task";
 import { useTaskStore } from "@/store/taskStore";
-import { useState } from "react";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { JSX, useState } from "react";
+import {
+  FaTrash,
+  FaEdit,
+  FaAngleDoubleUp,
+  FaAngleDown,
+  FaAngleUp,
+} from "react-icons/fa";
 import Link from "next/link";
 import EditTaskModal from "./EditTaskModal";
 import ConfirmDeleteModal from "@/app/components/ConfirmDeleteModal";
+import AnimatedModal from "@/app/components/AnimatedModal";
 
 interface TaskItemProps {
   task: Task;
@@ -25,10 +32,22 @@ export default function TaskItem({ task }: TaskItemProps) {
     setShowConfirm(false);
   }
 
-  const priorityColors: Record<TaskPriority, string> = {
-    [TaskPriority.LOW]: "bg-gray-400",
-    [TaskPriority.MEDIUM]: "bg-orange-500",
-    [TaskPriority.HIGH]: "bg-red-600",
+  const priorityIcons: Record<TaskPriority, JSX.Element> = {
+    [TaskPriority.LOW]: (
+      <div className="flex flex-col items-center">
+        <FaAngleDown className="text-gray-400 text-2xl" />
+      </div>
+    ),
+    [TaskPriority.MEDIUM]: (
+      <div className="flex flex-col items-center">
+        <FaAngleUp className="text-orange-500 text-2xl" />
+      </div>
+    ),
+    [TaskPriority.HIGH]: (
+      <div className="flex flex-col items-center">
+        <FaAngleDoubleUp className="text-red-600 text-2xl" />
+      </div>
+    ),
   };
 
   const formatDate = (dateString?: string) => {
@@ -45,14 +64,8 @@ export default function TaskItem({ task }: TaskItemProps) {
         >
           {task.title}
         </Link>
-        <div className="flex gap-2">
-          <span
-            className={`text-white text-sm px-2 py-1 rounded ${
-              priorityColors[task.priority]
-            }`}
-          >
-            {task.priority}
-          </span>
+        <div className="flex gap-2 justify-end items-center">
+          {priorityIcons[task.priority]}
         </div>
       </div>
 
@@ -83,7 +96,9 @@ export default function TaskItem({ task }: TaskItemProps) {
       </div>
 
       {isEditing && (
-        <EditTaskModal task={task} onClose={() => setIsEditing(false)} />
+        <AnimatedModal>
+          <EditTaskModal task={task} onClose={() => setIsEditing(false)} />
+        </AnimatedModal>
       )}
 
       <ConfirmDeleteModal
