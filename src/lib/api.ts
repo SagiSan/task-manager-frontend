@@ -100,6 +100,19 @@ export async function getTasks(filters = ""): Promise<ApiResponse<TaskRes>> {
   }
 }
 
+export async function getTaskById(id: number): Promise<ApiResponse<Task>> {
+  try {
+    const res = await fetch(`${API_BASE}/tasks/${id}`, {
+      method: "GET",
+      credentials: "include",
+    });
+    return await processResponse(res);
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    return { success: false, message: (error as Error).message };
+  }
+}
+
 export async function addTask(taskData: TaskInput): Promise<ApiResponse<Task>> {
   try {
     const res = await fetch(`${API_BASE}/tasks`, {

@@ -1,5 +1,11 @@
 import { create } from "zustand";
-import { getTasks, addTask, updateTask, deleteTask } from "@/lib/api";
+import {
+  getTasks,
+  getTaskById,
+  addTask,
+  updateTask,
+  deleteTask,
+} from "@/lib/api";
 import { Task, TaskInput, TaskRes, TaskStatus } from "@/types/task";
 import { ApiResponse } from "@/types";
 
@@ -7,6 +13,7 @@ interface TaskStore {
   tasks: Task[];
   total: number;
   fetchTasks: () => Promise<ApiResponse<TaskRes>>;
+  fetchTask: (id: number) => Promise<ApiResponse<Task>>;
   addTask: (taskData: TaskInput) => Promise<ApiResponse<Task>>;
   updateTask: (
     id: number,
@@ -24,6 +31,28 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       const response = await getTasks();
       if (response.success && response.data) {
         set({ tasks: response.data.tasks, total: response.data.total });
+        return { success: true, data: response.data };
+      } else {
+        console.error("Failed to fetch tasks:", response.message);
+        return {
+          success: false,
+          error: response.error,
+          message: response.message,
+        };
+      }
+    } catch (error) {
+      const errMsg =
+        error instanceof Error ? error.message : "Unexpected error";
+      console.error("Error in fetchTasks:", errMsg);
+      return { success: false, error: errMsg };
+    }
+  },
+
+  fetchTask: async (taskId: number) => {
+    try {
+      const response = await getTaskById(taskId);
+      if (response.success && response.data) {
+        set({ tasks: [response.data], total: 1 });
         return { success: true, data: response.data };
       } else {
         console.error("Failed to fetch tasks:", response.message);

@@ -56,21 +56,20 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
-            # 1. Navigate to your app directory on the server
-            cd /path/to/your/app
+            # Move to the application directory
+            cd /var/www/task-manager/frontend
 
-            # 2. (Option A) Git pull if you already have a git repo on the server
+            # Pull the latest code
             git pull origin main
 
-            # 3. Install (or update) dependencies
-            npm install
+            # Build the new images
+            docker-compose build
 
-            # 4. Build
-            npm run build
+            # Restart containers with the new build
+            docker-compose up -d
 
-            # 5. Restart your PM2 or systemd service, etc.
-            # pm2 restart my-nextjs-app
-            # or
-            # sudo systemctl restart my-nextjs-app
+            # Optional: Remove old images to free space
+            docker image prune -af
+
+            echo "✅ Deployment complete!"
