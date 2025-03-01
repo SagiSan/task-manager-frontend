@@ -63,13 +63,16 @@ jobs:
             # Pull the latest code
             git pull origin main
 
-            # Build the new images
-            docker-compose build
+            # Stop and remove running containers
+            docker-compose down
 
-            # Restart containers with the new build
-            docker-compose up -d
-
-            # Optional: Remove old images to free space
+            # Remove old unused images, volumes, and containers to free up space
             docker image prune -af
+
+            # Build the new images
+            docker-compose build --no-cache
+
+            # Start fresh containers with the new build
+            docker-compose up -d
 
             echo "✅ Deployment complete!"
