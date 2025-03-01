@@ -79,7 +79,7 @@ test("renders task information", () => {
   const expectedDate = new Date(dummyTask.dueDate!).toLocaleDateString();
   expect(screen.getByText(new RegExp(expectedDate))).toBeInTheDocument();
 
-  expect(screen.getByText(dummyTask.priority)).toBeInTheDocument();
+  expect(screen.getByTestId("medium-priority-icon")).toBeInTheDocument();
 });
 
 test("opens edit modal when edit button is clicked", () => {

@@ -34,17 +34,26 @@ export default function TaskItem({ task }: TaskItemProps) {
 
   const priorityIcons: Record<TaskPriority, JSX.Element> = {
     [TaskPriority.LOW]: (
-      <div className="flex flex-col items-center">
+      <div
+        className="flex flex-col items-center"
+        data-testid="low-priority-icon"
+      >
         <FaAngleDown className="text-gray-400 text-2xl" />
       </div>
     ),
     [TaskPriority.MEDIUM]: (
-      <div className="flex flex-col items-center">
+      <div
+        className="flex flex-col items-center"
+        data-testid="medium-priority-icon"
+      >
         <FaAngleUp className="text-orange-500 text-2xl" />
       </div>
     ),
     [TaskPriority.HIGH]: (
-      <div className="flex flex-col items-center">
+      <div
+        className="flex flex-col items-center"
+        data-testid="high-priority-icon"
+      >
         <FaAngleDoubleUp className="text-red-600 text-2xl" />
       </div>
     ),
