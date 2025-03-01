@@ -63,6 +63,9 @@ jobs:
             # Pull the latest code
             git pull origin main
 
+            # Move to the application directory
+            cd /var/www/task-manager
+
             # Stop and remove running containers
             docker-compose down
 
