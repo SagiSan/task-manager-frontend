@@ -22,6 +22,8 @@ Welcome to my task manager project. Before starting, I apologize if some things 
 
 Link to [live server](http://64.226.121.96/login/). (Google and Github signin are disabled on live server since I dont have a domain).
 
+Link [pipelines](https://github.com/SagiSan/task-manager-frontend/actions/workflows/ci-cd.yml) to verify that CI-CD exists and works.
+
 For any questions, you can reach me at samir.sagi@gmail.com.
 
 Thank you for your time and patience!
