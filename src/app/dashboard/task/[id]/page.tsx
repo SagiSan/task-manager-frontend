@@ -6,31 +6,44 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { TaskStatus, TaskPriority } from "@/types/task";
 import Link from "next/link";
-import { FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
+import { FaArrowLeft, FaEdit, FaTrash, FaUserCircle } from "react-icons/fa";
 import EditTaskModal from "../../components/EditTaskModal";
 import ConfirmDeleteModal from "@/app/components/ConfirmDeleteModal";
 
 export default function TaskDetailsPage() {
   const { id } = useParams();
   const taskId = parseInt(id as string, 10);
-  const { tasks, deleteTask, fetchTask } = useTaskStore();
+  const {
+    tasks,
+    categories,
+    comments,
+    fetchCategories,
+    deleteTask,
+    fetchTask,
+    addComment,
+    fetchComments,
+  } = useTaskStore();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
     const getTaskAsync = async (id: number) => {
       await fetchTask(id);
+      await fetchCategories();
+      await fetchComments(id);
       setIsLoading(false);
     };
     if (!tasks.length) {
       getTaskAsync(taskId);
     } else setIsLoading(false);
-  }, [tasks, taskId, fetchTask]);
+  }, [tasks, taskId, fetchTask, fetchCategories, fetchComments]);
 
   const task = tasks.find((t) => t.id === taskId);
+  const taskCategory = categories.find((c) => c.id === task?.categoryId);
 
   async function handleDelete() {
     setIsDeleting(true);
@@ -40,6 +53,19 @@ export default function TaskDetailsPage() {
 
     if (success) router.push("/dashboard");
   }
+
+  const handleAddComment = async () => {
+    if (commentText.trim() === "" || !task?.id) return;
+
+    const result = await addComment({
+      content: commentText,
+      taskId: task.id,
+    });
+
+    if (result.success) {
+      setCommentText("");
+    } else console.log(result.error);
+  };
 
   const statusColors: Record<TaskStatus, string> = {
     [TaskStatus.PENDING]: "bg-yellow-300",
@@ -110,6 +136,17 @@ export default function TaskDetailsPage() {
             </div>
           </div>
 
+          {taskCategory && (
+            <div>
+              <span className="font-semibold text-gray-700 block">
+                Category
+              </span>
+              <div className={`text-gray-500 text-sm text-right capitalize`}>
+                {taskCategory.name}
+              </div>
+            </div>
+          )}
+
           <div>
             <span className="font-semibold text-gray-700">Created</span>
             <div className="text-sm text-gray-500">
@@ -128,7 +165,46 @@ export default function TaskDetailsPage() {
         </div>
       </div>
 
-      <div className="flex gap-6 mt-8 justify-end">
+      <div className="mt-12">
+        <h2 className="text-xl font-semibold mb-4">Comments</h2>
+        <textarea
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+          placeholder="Write your comment..."
+          className="w-full border p-2 rounded-md focus:ring focus:ring-blue-300"
+        />
+        <div className="flex justify-end mt-2 mb-8">
+          <button
+            onClick={handleAddComment}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          >
+            Comment
+          </button>
+        </div>
+        <div className="mt-4 border rounded p-4 max-h-64 overflow-y-auto">
+          {comments.map((comment) => (
+            <div
+              key={comment.id}
+              className="flex items-start border-t border-gray-300 pt-2 mb-4"
+            >
+              <div className="mr-3">
+                <FaUserCircle size={40} className="text-gray-400" />
+              </div>
+
+              <div>
+                <div className="bg-gray-100 rounded-lg p-3">
+                  <p className="text-gray-800">{comment.content}</p>
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {new Date(comment.createdAt).toLocaleString()}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex gap-6 mt-16 justify-end">
         <button
           onClick={() => setIsEditing(true)}
           className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 flex items-center gap-2 transition"
@@ -151,7 +227,11 @@ export default function TaskDetailsPage() {
       </div>
 
       {isEditing && (
-        <EditTaskModal task={task} onClose={() => setIsEditing(false)} />
+        <EditTaskModal
+          task={task}
+          categories={categories}
+          onClose={() => setIsEditing(false)}
+        />
       )}
 
       <ConfirmDeleteModal

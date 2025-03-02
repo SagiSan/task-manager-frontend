@@ -4,17 +4,26 @@ import { useState } from "react";
 import { useTaskStore } from "@/store/taskStore";
 import { Task, TaskStatus, TaskPriority } from "@/types/task";
 import { taskSchema } from "@/schemas/taskSchema";
+import { Category } from "@/types";
 
 export interface EditTaskModalProps {
   task: Task;
+  categories?: Category[];
   onClose: () => void;
 }
 
-export default function EditTaskModal({ task, onClose }: EditTaskModalProps) {
+export default function EditTaskModal({
+  task,
+  categories,
+  onClose,
+}: EditTaskModalProps) {
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || "");
   const [status, setStatus] = useState<TaskStatus>(task.status);
   const [priority, setPriority] = useState<TaskPriority>(task.priority);
+  const [categoryId, setCategoryId] = useState<number | undefined>(
+    task.categoryId
+  );
   const [dueDate, setDueDate] = useState(task.dueDate || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -26,7 +35,14 @@ export default function EditTaskModal({ task, onClose }: EditTaskModalProps) {
     setLoading(true);
     setError("");
 
-    const updatedTask = { title, description, status, priority, dueDate };
+    const updatedTask = {
+      title,
+      description,
+      status,
+      priority,
+      dueDate,
+      categoryId,
+    };
 
     const parseResult = taskSchema.safeParse(updatedTask);
     if (!parseResult.success) {
@@ -142,6 +158,30 @@ export default function EditTaskModal({ task, onClose }: EditTaskModalProps) {
               className="border p-2 w-full rounded-md focus:ring focus:ring-blue-300"
             />
           </div>
+
+          {categories && categories.length > 0 && (
+            <div>
+              <label
+                htmlFor="task-category"
+                className="block text-gray-700 font-medium mb-1"
+              >
+                Category
+              </label>
+              <select
+                id="task-category"
+                value={categoryId || ""}
+                onChange={(e) => setCategoryId(parseInt(e.target.value))}
+                className="border p-2 w-full rounded-md focus:ring focus:ring-blue-300"
+              >
+                <option value="">Select category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="flex justify-end gap-2">
             <button

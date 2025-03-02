@@ -1,5 +1,6 @@
 import { Task, TaskInput, TaskRes } from "@/types/task";
 import { ApiResponse } from "@/types/api";
+import { Category, Comment, CommentInput, CommentsRes } from "@/types";
 
 export const API_BASE =
   process.env.NODE_ENV === "production"
@@ -155,6 +156,51 @@ export async function deleteTask(id: number): Promise<ApiResponse<null>> {
     return await processResponse(res);
   } catch (error) {
     console.error("Error deleting task:", error);
+    return { success: false, message: (error as Error).message };
+  }
+}
+
+export async function getCategories(): Promise<ApiResponse<Category[]>> {
+  try {
+    const res = await fetch(`${API_BASE}/categories`, {
+      method: "GET",
+      credentials: "include",
+    });
+    return await processResponse(res);
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    return { success: false, message: (error as Error).message };
+  }
+}
+
+export async function addComment(
+  commentData: CommentInput
+): Promise<ApiResponse<Comment>> {
+  try {
+    const res = await fetch(`${API_BASE}/comments/${commentData.taskId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ content: commentData.content }),
+    });
+    return await processResponse(res);
+  } catch (error) {
+    console.error("Error adding task:", error);
+    return { success: false, message: (error as Error).message };
+  }
+}
+
+export async function getComments(
+  taskId: number
+): Promise<ApiResponse<CommentsRes>> {
+  try {
+    const res = await fetch(`${API_BASE}/comments/${taskId}`, {
+      method: "GET",
+      credentials: "include",
+    });
+    return await processResponse(res);
+  } catch (error) {
+    console.error("Error adding task:", error);
     return { success: false, message: (error as Error).message };
   }
 }

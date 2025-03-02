@@ -18,6 +18,7 @@ export interface Task {
   priority: TaskPriority;
   dueDate?: string;
   createdAt: string;
+  categoryId?: number;
 }
 
 export interface TaskInput {
@@ -26,6 +27,7 @@ export interface TaskInput {
   status: TaskStatus;
   priority: TaskPriority;
   dueDate?: string;
+  categoryId?: number;
 }
 
 export interface TaskRes {
