@@ -33,13 +33,14 @@ export default function TaskDetailsPage() {
   useEffect(() => {
     const getTaskAsync = async (id: number) => {
       await fetchTask(id);
-      await fetchCategories();
-      await fetchComments(id);
       setIsLoading(false);
     };
     if (!tasks.length) {
       getTaskAsync(taskId);
     } else setIsLoading(false);
+
+    fetchCategories();
+    fetchComments(taskId);
   }, [tasks, taskId, fetchTask, fetchCategories, fetchComments]);
 
   const task = tasks.find((t) => t.id === taskId);
