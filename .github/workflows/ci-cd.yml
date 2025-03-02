@@ -64,6 +64,12 @@ jobs:
             git pull origin main
 
             # Move to the application directory
+            cd /var/www/task-manager/backend
+
+            # Pull the latest code
+            git pull origin master
+
+            # Move to the application directory
             cd /var/www/task-manager
 
             # Stop and remove running containers
