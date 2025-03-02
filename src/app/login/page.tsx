@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginUser } from "@/lib/api";
+import { API_BASE, loginUser } from "@/lib/api";
 import { loginSchema } from "@/schemas/loginSchema";
 import { signIn } from "next-auth/react";
 
@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const isProduction = process.env.NODE_ENV === "production";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,6 +32,13 @@ export default function LoginPage() {
     } else {
       setError(result.message ?? "An unknown error occurred");
     }
+  };
+
+  const handleOauth = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    window.location.href = `${API_BASE}/auth/google/callback`;
   };
 
   return (
@@ -82,7 +90,8 @@ export default function LoginPage() {
 
         <button
           type="button"
-          onClick={() => signIn("google")}
+          onClick={(event) => handleOauth(event)}
+          disabled={isProduction}
           className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 flex items-center justify-center gap-2"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -97,6 +106,7 @@ export default function LoginPage() {
         <button
           type="button"
           onClick={() => signIn("github")}
+          disabled={isProduction}
           className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 mt-3 flex items-center justify-center gap-2"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
