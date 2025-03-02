@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE, loginUser } from "@/lib/api";
 import { loginSchema } from "@/schemas/loginSchema";
-import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,6 +38,13 @@ export default function LoginPage() {
   ) => {
     event.preventDefault();
     window.location.href = `${API_BASE}/auth/google/callback`;
+  };
+
+  const handleGithubLogin = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    window.location.href = `${API_BASE}/auth/github/callback`;
   };
 
   return (
@@ -105,7 +111,7 @@ export default function LoginPage() {
 
         <button
           type="button"
-          onClick={() => signIn("github")}
+          onClick={(event) => handleGithubLogin(event)}
           disabled={isProduction}
           className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 mt-3 flex items-center justify-center gap-2"
         >
